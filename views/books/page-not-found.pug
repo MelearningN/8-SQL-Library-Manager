@@ -1,0 +1,11 @@
+block content
+  div.container
+    if err
+      h1= err.message
+    else 
+      h1 Page requested not found
+    nav.nav
+    a(href='/')
+      span &larr;
+      | Go Back
+    img(src="/images/noResultFound.png")
