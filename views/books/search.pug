@@ -1,0 +1,26 @@
+extends ../layout
+
+block content
+  div.subheader
+    h2=title
+    a(href="/books/new", class="button") Create New Book &#43;
+    form(method='POST' action='/books/search' id='search')
+      input(name='q' type='text' id='title' )
+      input(value='Search Books' type='submit')
+  table
+   tr
+    th Title
+    th Author
+    th Genre
+    th Year
+   each book in bookQueried
+    tr
+     td
+      a(href=`/books/${book.id}/edit`)=book.title
+     td=book.author
+     td=book.genre
+     td=book.year
+  - for (let i=1; i<= pageCounts; i++)
+     a(href="/search/" +query+ "?page=" + i, class="button", id="home")=i
+  if(title=='Search Results')
+   a(href="/books", class="button", id="home") Go back &#43;
