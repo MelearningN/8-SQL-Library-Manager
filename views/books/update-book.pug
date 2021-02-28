@@ -3,5 +3,5 @@ extends ../layout
 block content
   h2= title
   include errors
-  form(action="/books/" + book.id + "/edit", method="post")
+  form(action="/books/" + book.id + "/edit", method="post", style='background-color: beige; height:600px')
     include form

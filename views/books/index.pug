@@ -13,7 +13,7 @@ block content
     th Author
     th Genre
     th Year
-   each book in bookQueried
+   each book in paginatedBooks
     tr
      td
       a(href=`/books/${book.id}/edit`)=book.title

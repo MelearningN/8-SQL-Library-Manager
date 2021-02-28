@@ -2,27 +2,33 @@ const express = require('express');
 const router = express.Router();
 const Book = require('../models').Book;
 const {Op} = require("sequelize");
+const pagination=require("../utility")
+
 
 /* Handler function to wrap each route. */
 function asyncHandler(cb) {
     return async (req, res, next) => {
         try {
             await cb(req, res, next)
-        } catch (error) { // Forward error to the global error handler
+        } catch (error) {
             next(error);
         }
     }
 }
 
-/* GET articles listing. */
+/* GET books listing. */
 router.get('/', asyncHandler(async (req, res) => {
     let {page} = req.query
-    let offset = 0;
-    if (!page) { // if page is not defined == null
+    if (!page) {
         page = 1;
     }
-   console.log('simple get', page)
-    const books = await Book.findAll({
+    // total books
+    const books = await Book.findAll({});
+
+    // decides how many paginated buttons should be there
+    let pageCounts = Math.ceil(books.length / pagination)
+
+    const paginatedBooks = await Book.findAll({
         order: [
             [
                 'author', 'ASC'
@@ -30,32 +36,19 @@ router.get('/', asyncHandler(async (req, res) => {
             [
                 'title', 'ASC'
             ],
-        ]
+        ],
+        limit: pagination,
+        offset: (page - 1) * pagination
     });
-    const bookQueried = await Book.findAll({
-      order: [
-          [
-              'author', 'ASC'
-          ],
-          [
-              'title', 'ASC'
-          ],
-      ],
-      limit: 5,
-      offset: (page-1)*5
-  });
-  
-    let pageCounts = Math.ceil(books.length / 5)
-   
     res.render("books/index", {
-        bookQueried,
+        paginatedBooks,
         title: "Welcome to the library!",
         pageCounts,
         page
     });
 }));
 
-/* Create a new article form. */
+/* Create a new book form. */
 router.get('/new', (req, res) => {
     res.render("books/new-book", {
         book: {},
@@ -83,7 +76,7 @@ router.post('/new', asyncHandler(async (req, res) => {
     }
 }));
 
-/* Edit article form. */
+/* Edit book form. */
 router.get("/:id/edit", asyncHandler(async (req, res) => {
     const book = await Book.findByPk(req.params.id);
     if (book) {
@@ -93,7 +86,7 @@ router.get("/:id/edit", asyncHandler(async (req, res) => {
     }
 }));
 
-/* GET individual article. */
+/* GET individual book. */
 router.get("/:id", asyncHandler(async (req, res) => {
     const book = await Book.findByPk(req.params.id);
     if (book) {
@@ -104,7 +97,7 @@ router.get("/:id", asyncHandler(async (req, res) => {
 }));
 
 
-/* Update an article. */
+/* Update an book. */
 router.post('/:id/edit', asyncHandler(async (req, res) => {
     let book;
     try {
@@ -130,7 +123,7 @@ router.post('/:id/edit', asyncHandler(async (req, res) => {
     }
 }));
 
-/* Delete article form. */
+/* Get an a individual book to delete. */
 router.get("/:id/delete", asyncHandler(async (req, res) => {
     const book = await Book.findByPk(req.params.id);
     if (book) {
@@ -140,7 +133,7 @@ router.get("/:id/delete", asyncHandler(async (req, res) => {
     }
 }));
 
-/* Delete individual article. */
+/* Delete individual book. */
 router.post('/:id/delete', asyncHandler(async (req, res) => {
     const book = await Book.findByPk(req.params.id);
     if (book) {
