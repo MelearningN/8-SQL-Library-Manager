@@ -6,6 +6,7 @@ const logger = require('morgan');
 var sequelize = require('./models').sequelize;
 const routes = require('./routes/index');
 const books = require('./routes/books');
+const search = require('./routes/search');
 
 const app = express();
 
@@ -24,6 +25,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
 app.use('/books', books);
+app.use('/search', search)
 
 // catch 404 and forward to error handler
 app.use( (req, res, next) => {
