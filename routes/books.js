@@ -40,6 +40,10 @@ router.get('/', asyncHandler(async (req, res) => {
         limit: pagination,
         offset: (page - 1) * pagination
     });
+     if(paginatedBooks.length<1){
+        res.redirect("/books")
+     }
+    
     res.render("books/index", {
         paginatedBooks,
         title: "Welcome to the library!",
@@ -82,7 +86,7 @@ router.get("/:id/edit", asyncHandler(async (req, res) => {
     if (book) {
         res.render("books/update-book", {book, title: "Edit Book"});
     } else {
-        res.render("books/page-not-found");
+        res.redirect("/error");
     }
 }));
 
@@ -91,8 +95,6 @@ router.get("/:id", asyncHandler(async (req, res) => {
     const book = await Book.findByPk(req.params.id);
     if (book) {
         res.render("books/show", {book, title: book.title});
-    } else {
-        res.render("books/page-not-found");
     }
 }));
 
@@ -105,8 +107,6 @@ router.post('/:id/edit', asyncHandler(async (req, res) => {
         if (book) {
             await book.update(req.body);
             res.redirect("/books/");
-        } else {
-            res.render("books/page-not-found");
         }
     } catch (error) {
         if (error.name === "SequelizeValidationError") {
@@ -129,7 +129,7 @@ router.get("/:id/delete", asyncHandler(async (req, res) => {
     if (book) {
         res.render("books/delete", {book, title: "Delete Book"});
     } else {
-        res.render("books/page-not-found");
+        res.redirect("/error");
     }
 }));
 
@@ -140,8 +140,19 @@ router.post('/:id/delete', asyncHandler(async (req, res) => {
         await book.destroy();
         res.redirect("/books");
     } else {
-        res.render("books/page-not-found");
+        res.redirect("/error");
     }
 }));
+
+router.get('/error', (req, res) => {
+    // Log statement to indicate that this function is running
+    console.log('Handling request to custom "error" route, "/error"');
+  
+    // Create custom error and print error message to the page
+    const err = new Error('err');
+    err.message = 'Oops, it looks like an error occurred.';
+    throw err;
+  });
+  
 
 module.exports = router;

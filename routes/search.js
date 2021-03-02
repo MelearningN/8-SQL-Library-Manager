@@ -68,7 +68,7 @@ router.get("/:query", asyncHandler(async (req, res) => {
             query
         });
     } else {
-        res.render("books/page-not-found");
+        res.redirect("/error");
     }
 }));
 
@@ -125,7 +125,7 @@ router.post('/', asyncHandler(async (req, res, next) => {
             query
         });
     } else {
-        res.render("books/page-not-found");
+        res.redirect("/error");
     }
 }));
 

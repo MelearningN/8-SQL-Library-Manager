@@ -1,7 +1,8 @@
 block content
   div.container
     if err
-      h1= err.message
+      h1= err.status
+      h2= err.message
     else 
       h1 Page requested not found
     nav.nav

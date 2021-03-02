@@ -5,6 +5,7 @@ const logger = require('morgan');
 const routes = require('./routes/index');
 const books = require('./routes/books');
 const search = require('./routes/search');
+const errorHandlers = require('./errorHandlers');
 
 const app = express();
 
@@ -23,19 +24,8 @@ app.use('/books', books);
 app.use('/search', search)
 
 // catch 404 and forward to error handler
-app.use((req, res, next) => {
-    res.render("books/page-not-found");
-    // next(createError(404));
-});
+app.use(errorHandlers.handleFourOhFour);
+app.use(errorHandlers.handleGlobalError);
 
-// error handler
-app.use((err, req, res, next) => { // set locals, only providing error in development
-    res.locals.message = err.message;
-    res.locals.error = req.app.get('env') === 'development' ? err : {};
-
-    // render the error page
-    res.status(err.status || 500);
-    res.render('error');
-});
 
 module.exports = app;

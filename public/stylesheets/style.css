@@ -24,6 +24,9 @@ table {
 .paginated{
     margin-left:20px
 }
+.errors{
+    background-color: brown;
+}
 #search{
   margin-left:650px,
 }
